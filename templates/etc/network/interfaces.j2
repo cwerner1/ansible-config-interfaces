@@ -8,20 +8,20 @@ iface lo inet loopback
 ########## Network Interfaces
 {%   for item in network_interfaces %}
 {%     if item['configure'] is defined and item['configure'] %}
-{%       if item['comment'] is defined and item['comment'] != None %}
-# {{ item['comment'] }}
-{%       endif %}
 {%       if item['method']|lower == "static" or item['method']|lower == "manual" %}
+{%         if item['auto'] is defined and item['auto'] == False %}
+{% else %}
 auto {{ item['name'] }}
+{% endif %}
 iface {{ item['name'] }} inet {{ item['method']|lower }}
 {%         if item['address'] is defined and item['address'] != None %}
-  address {{ item['address'] }}
+       address {{ item['address'] }}
 {%         endif %}
 {%         if item['netmask'] is defined and item['netmask'] != None %}
-  netmask {{ item['netmask'] }}
+       netmask {{ item['netmask'] }}
 {%         endif %}
 {%         if item['gateway'] is defined and item['gateway'] != None %}
-  gateway {{ item['gateway'] }}
+       gateway {{ item['gateway'] }}
 {%         endif %}
 {%       endif %}
 {%       if item['method']|lower == "dhcp" %}
@@ -29,13 +29,16 @@ auto {{ item['name'] }}
 iface {{ item['name'] }} inet {{ item['method']|lower }}
 {%       endif %}
 {%       if item['wireless_network'] is defined and item['wireless_network'] %}
-  wpa-ssid {{ item['wpa_ssid'] }}
-  wpa-psk {{ item['wpa_psk'] }}
+       wpa-ssid {{ item['wpa_ssid'] }}
+       wpa-psk {{ item['wpa_psk'] }}
 {%       endif %}
 {%       if item['parameters'] is defined and item['parameters'] != None %}
 {%         for param in item['parameters'] %}
-  {{ param['param'] }} {{ param['val'] }}
+       {{ param['param'] }} {{ param['val'] }}
 {%         endfor %}
+{%       endif %}
+{%       if item['comment'] is defined and item['comment'] != None %}
+# {{ item['comment'] }}
 {%       endif %}
 {%     endif %}
 
@@ -47,29 +50,30 @@ iface {{ item['name'] }} inet {{ item['method']|lower }}
 ########## Network Bonds
 {%   for item in network_bonds %}
 {%     if item['configure'] is defined and item['configure'] %}
-{%       if item['comment'] is defined and item['comment'] != None %}
-# {{ item['comment'] }}
-{%       endif %}
+
 auto {{ item['name'] }}
 iface {{ item['name'] }} inet {{ item['method']|lower }}
 {%       if item['method']|lower == 'static' %}
 {%         if item['address'] is defined and item['address'] != None %}
-  address {{ item['address'] }}
+       address {{ item['address'] }}
 {%         endif %}
 {%         if item['netmask'] is defined and item['netmask'] != None %}
-  netmask {{ item['netmask'] }}
+       netmask {{ item['netmask'] }}
 {%         endif %}
 {%         if item['gateway'] is defined and item['gateway'] != None %}
-  gateway {{ item['gateway'] }}
+       gateway {{ item['gateway'] }}
 {%         endif %}
 {%       endif %}
 {%       if item['slaves'] is defined and item['slaves'] != None %}
-  bond_slaves {{ item['slaves']|join (' ') }}
+       bond-slaves {{ item['slaves']|join (' ') }}
 {%       endif %}
 {%       if item['parameters'] is defined and item['parameters'] != None %}
 {%         for param in item['parameters'] %}
-  {{ param['param'] }} {{ param['val'] }}
+       {{ param['param'] }} {{ param['val'] }}
 {%         endfor %}
+{%       endif %}
+{%       if item['comment'] is defined and item['comment'] != None %}
+# {{ item['comment'] }}
 {%       endif %}
 {%     endif %}
 
@@ -81,20 +85,18 @@ iface {{ item['name'] }} inet {{ item['method']|lower }}
 ########## Network VLANS
 {%   for item in network_vlans %}
 {%     if item['configure'] is defined and item['configure'] %}
-{%       if item['comment'] is defined %}
-# {{ item['comment'] }}
-{%       endif %}
+
 {%       if item['method']|lower == "static" or item['method']|lower == "manual" %}
 auto {{ item['name'] }}
 iface {{ item['name'] }} inet {{ item['method']|lower }}
 {%         if item['address'] is defined and item['address'] != None %}
-  address {{ item['address'] }}
+       address {{ item['address'] }}
 {%         endif %}
 {%         if item['netmask'] is defined and item['netmask'] != None %}
-  netmask {{ item['netmask'] }}
+       netmask {{ item['netmask'] }}
 {%         endif %}
 {%         if item['gateway'] is defined and item['gateway'] != None %}
-  gateway {{ item['gateway'] }}
+       gateway {{ item['gateway'] }}
 {%         endif %}
 {%       endif %}
 {%       if item['method']|lower == "dhcp" %}
@@ -103,10 +105,13 @@ iface {{ item['name'] }} inet {{ item['method']|lower }}
 {%       endif %}
 {%       if item['parameters'] is defined and item['parameters'] != None %}
 {%         for param in item['parameters'] %}
-  {{ param['param'] }} {{ param['val'] }}
+       {{ param['param'] }} {{ param['val'] }}
 {%         endfor %}
 {%       endif %}
-  vlan_raw_device {{ item['vlan_device'] }}
+       vlan_raw_device {{ item['vlan_device'] }}
+{%       if item['comment'] is defined %}
+# {{ item['comment'] }}
+{%       endif %}
 {%     endif %}
 
 {%   endfor %}
@@ -117,20 +122,18 @@ iface {{ item['name'] }} inet {{ item['method']|lower }}
 ########## Network Bridges
 {%   for item in network_bridges %}
 {%     if item['configure'] is defined and item['configure'] %}
-{%       if item['comment'] is defined %}
-# {{ item['comment'] }}
-{%       endif %}
+
 {%       if item['method']|lower == "static" or item['method']|lower == "manual" %}
 auto {{ item['name'] }}
 iface {{ item['name'] }} inet {{ item['method']|lower }}
 {%         if item['address'] is defined and item['address'] != None %}
-  address {{ item['address'] }}
+       address {{ item['address'] }}
 {%         endif %}
 {%         if item['netmask'] is defined and item['netmask'] != None %}
-  netmask {{ item['netmask'] }}
+       netmask {{ item['netmask'] }}
 {%         endif %}
 {%         if item['gateway'] is defined and item['gateway'] != None %}
-  gateway {{ item['gateway'] }}
+       gateway {{ item['gateway'] }}
 {%         endif %}
 {%       endif %}
 {%       if item['method']|lower == "dhcp" %}
@@ -139,10 +142,13 @@ iface {{ item['name'] }} inet {{ item['method']|lower }}
 {%       endif %}
 {%       if item['parameters'] is defined and item['parameters'] != None %}
 {%         for param in item['parameters'] %}
-  {{ param['param'] }} {{ param['val'] }}
+       {{ param['param'] }} {{ param['val'] }}
 {%         endfor %}
 {%       endif %}
-  bridge_ports {{ item['ports']|join(' ') }}
+       bridge-ports {{ item['ports']|join(' ') }}
+{%       if item['comment'] is defined %}
+# {{ item['comment'] }}
+{%       endif %}
 {%     endif %}
 
 {%   endfor %}
@@ -160,25 +166,25 @@ allow-{{ item['bridge'] }} {{ item['name'] }}
 iface {{ item['name'] }} inet {{ item['method']|lower }}
 {%       if item['method']|lower == "static" or item['method']|lower == "manual" %}
 {%         if item['address'] is defined and item['address'] != None %}
-  address {{ item['address'] }}
+       address {{ item['address'] }}
 {%         endif %}
 {%         if item['netmask'] is defined and item['netmask'] != None %}
-  netmask {{ item['netmask'] }}
+       netmask {{ item['netmask'] }}
 {%         endif %}
 {%         if item['gateway'] is defined and item['gateway'] != None %}
-  gateway {{ item['gateway'] }}
+       gateway {{ item['gateway'] }}
 {%         endif %}
 {%       endif %}
 {%       if item['parameters'] is defined and item['parameters'] != None %}
 {%         for param in item['parameters'] %}
-  {{ param['param'] }} {{ param['val'] }}
+       {{ param['param'] }} {{ param['val'] }}
 {%         endfor %}
 {%       endif %}
-  ovs_bridge {{ item['bridge'] }}
-  ovs_type OVSBond
-  ovs_bonds {{ item['ports']|join(' ') }}
+       ovs_bridge {{ item['bridge'] }}
+       ovs_type OVSBond
+       ovs_bonds {{ item['ports']|join(' ') }}
 {%       if item['options'] is defined %}
-  ovs_options {% for item2 in item['options'] %}{{ item2['opt'] }}={{ item2['val'] }}{% if not loop.last %} {% endif %}{% endfor %}
+       ovs_options {% for item2 in item['options'] %}{{ item2['opt'] }}={{ item2['val'] }}{% if not loop.last %} {% endif %}{% endfor %}
 
 {%       endif %}
 {%     endif %}
@@ -199,24 +205,24 @@ allow-ovs {{ item['name'] }}
 iface {{ item['name'] }} inet {{ item['method']|lower }}
 {%       if item['method']|lower == "static" or item['method']|lower == "manual" %}
 {%         if item['address'] is defined and item['address'] != None %}
-  address {{ item['address'] }}
+       address {{ item['address'] }}
 {%         endif %}
 {%         if item['netmask'] is defined and item['netmask'] != None %}
-  netmask {{ item['netmask'] }}
+       netmask {{ item['netmask'] }}
 {%         endif %}
 {%         if item['gateway'] is defined and item['gateway'] != None %}
-  gateway {{ item['gateway'] }}
+       gateway {{ item['gateway'] }}
 {%         endif %}
 {%       endif %}
 {%       if item['parameters'] is defined and item['parameters'] != None %}
 {%         for param in item['parameters'] %}
-  {{ param['param'] }} {{ param['val'] }}
+       {{ param['param'] }} {{ param['val'] }}
 {%         endfor %}
 {%       endif %}
-  ovs_type OVSBridge
-  ovs_ports {{ item['ports']|join(' ') }}
+       ovs_type OVSBridge
+       ovs_ports {{ item['ports']|join(' ') }}
 {%       if item['options'] is defined %}
-  ovs_options {% for item2 in item['options'] %}{{ item2['opt'] }}={{ item2['val'] }}{% if not loop.last %} {% endif %}{% endfor %}
+       ovs_options {% for item2 in item['options'] %}{{ item2['opt'] }}={{ item2['val'] }}{% if not loop.last %} {% endif %}{% endfor %}
 
 {%       endif %}
 {%     endif %}
@@ -237,24 +243,24 @@ allow-{{ item['bridge'] }} {{ item['name'] }}
 iface {{ item['name'] }} inet {{ item['method']|lower }}
 {%       if item['method']|lower == "static" or item['method']|lower == "manual" %}
 {%         if item['address'] is defined and item['address'] != None %}
-  address {{ item['address'] }}
+       address {{ item['address'] }}
 {%         endif %}
 {%         if item['netmask'] is defined and item['netmask'] != None %}
-  netmask {{ item['netmask'] }}
+       netmask {{ item['netmask'] }}
 {%         endif %}
 {%         if item['gateway'] is defined and item['gateway'] != None %}
-  gateway {{ item['gateway'] }}
+       gateway {{ item['gateway'] }}
 {%         endif %}
 {%       endif %}
 {%       if item['parameters'] is defined and item['parameters'] != None %}
 {%         for param in item['parameters'] %}
-  {{ param['param'] }} {{ param['val'] }}
+       {{ param['param'] }} {{ param['val'] }}
 {%         endfor %}
 {%       endif %}
-  ovs_bridge {{ item['bridge'] }}
-  ovs_type OVSIntPort
+       ovs_bridge {{ item['bridge'] }}
+       ovs_type OVSIntPort
 {%       if item['options'] is defined %}
-  ovs_options {% for item2 in item['options'] %}{{ item2['opt'] }}={{ item2['val'] }}{% if not loop.last %} {% endif %}{% endfor %}
+       ovs_options {% for item2 in item['options'] %}{{ item2['opt'] }}={{ item2['val'] }}{% if not loop.last %} {% endif %}{% endfor %}
 
 {%       endif %}
 {%     endif %}

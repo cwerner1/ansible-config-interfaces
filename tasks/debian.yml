@@ -55,7 +55,8 @@
   when: >
     (enable_configured_interfaces_after_defining or item['enable']) and
     item['configure'] and
-    config_interface['changed']
+    config_interface['changed'] and
+    (item['auto'] is defined and item['auto'] != False)
 
 - name: debian | Restarting Network VLANs
   shell: bash -c "ifdown {{ item.name }} --force && ifup {{ item.name }} --force"
@@ -65,7 +66,8 @@
     config_network_vlans and
     (enable_configured_interfaces_after_defining or item['enable']) and
     item['configure'] and
-    config_interface['changed']
+    config_interface['changed']and
+    (item['auto'] is defined and item['auto'] != False)
 
 - name: debian | Restarting Network Bridges
   shell: bash -c "ifdown {{ item.name }} --force && ifup {{ item.name }} --force"
@@ -75,7 +77,8 @@
     config_network_bridges and
     (enable_configured_interfaces_after_defining or item['enable']) and
     item['configure'] and
-    config_interface['changed']
+    config_interface['changed'] and
+    (item['auto'] is defined and item['auto'] != False)
 
 - name: debian | Restarting OVS Bridges
   shell: bash -c "ifdown {{ item.name }} --force && ifup {{ item.name }} --force"
@@ -85,7 +88,8 @@
     config_ovs_bridges and
     (enable_configured_interfaces_after_defining or item['enable']) and
     item['configure'] and
-    config_interface['changed']
+    config_interface['changed'] and
+    (item['auto'] is defined and item['auto'] != False)
 
 - name: debian | Restarting OVS Bonds
   shell: bash -c "ifdown {{ item.name }} --force && ifup {{ item.name }} --force"
@@ -95,7 +99,8 @@
     config_ovs_bonds and
     (enable_configured_interfaces_after_defining or item['enable']) and
     item['configure'] and
-    config_interface['changed']
+    config_interface['changed'] and
+    (item['auto'] is defined and item['auto'] != False)
 
 - name: debian | Restarting OVS Interfaces
   shell: bash -c "ifdown {{ item.name }} --force && ifup {{ item.name }} --force"
@@ -105,4 +110,5 @@
     config_ovs_interfaces and
     (enable_configured_interfaces_after_defining or item['enable']) and
     item['configure'] and
-    config_interface['changed']
+    config_interface['changed'] and
+    (item['auto'] is defined and item['auto'] != False)
